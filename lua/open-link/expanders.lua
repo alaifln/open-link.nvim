@@ -28,6 +28,20 @@ local function jira(base_url, prefixes)
   end
 end
 
+---@param base_url string
+---@param prefixes string[]
+---@return LinkExpander
+local function phab(base_url, prefixes)
+  local re_str = "\\v\\c^(" .. table.concat(prefixes, "|") .. ")\\d+$"
+  local re = vim.regex(re_str)
+
+  return function(link)
+    if re:match_str(link) then
+      return base_url .. link
+    end
+  end
+end
+
 ---@param keyword string
 ---@param github_project string
 ---@return LinkExpander
@@ -55,6 +69,7 @@ return {
   regex = regex,
   github = github,
   jira = jira,
+  phab = phab,
   github_issue_or_pr = github_issue_or_pr,
   homedir = homedir,
 }
